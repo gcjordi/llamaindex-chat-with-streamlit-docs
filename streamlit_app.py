@@ -3,15 +3,9 @@ from llama_index import VectorStoreIndex, ServiceContext, Document
 from llama_index.llms import OpenAI
 import openai
 from llama_index import SimpleDirectoryReader
-import os
 
 st.set_page_config(page_title="Chat with Medical docs, powered by LlamaIndex", page_icon="🦙", layout="centered", initial_sidebar_state="auto", menu_items=None)
 openai.api_key = st.secrets.openai_key
-st.write("Secret Key", st.secrets["secrets.openai_key"])
-st.write(
-    "Has environment variables been set:",
-    os.environ["secrets.openai_key"] == st.secrets["secrets.openai_key"],
-)
 st.title("Chat with Medical docs, powered by LlamaIndex 💬🦙")
 st.info("Contact in our [blog post](https://jordigarcia.eu/)", icon="📃")
 
@@ -22,10 +16,10 @@ if "messages" not in st.session_state.keys(): # Initialize the chat messages his
 
 @st.cache_resource(show_spinner=False)
 def load_data():
-    with st.spinner(text="Loading and indexing the medical docs – hang tight! This should take 1-2 minutes."):
+    with st.spinner(text="Loading and indexing the Medical docs – hang tight! This should take 1-2 minutes."):
         reader = SimpleDirectoryReader(input_dir="./data", recursive=True)
         docs = reader.load_data()
-        service_context = ServiceContext.from_defaults(llm=OpenAI(model="gpt-3.5-turbo-16k", temperature=0.1, system_prompt="You are an expert on the Streamlit Python library and your job is to answer technical questions. Assume that all questions are related to the Streamlit Python library. Keep your answers technical and based on facts – do not hallucinate features."))
+        service_context = ServiceContext.from_defaults(llm=OpenAI(model="gpt-3.5-turbo-16k", temperature=0.1, system_prompt="You are an expert in Cancer and your job is to answer patients questions. Assume that all questions are related to the medical docs. Keep your answers informative and based on facts – do not hallucinate features."))
         index = VectorStoreIndex.from_documents(docs, service_context=service_context)
         return index
 
